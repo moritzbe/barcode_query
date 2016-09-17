@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+  <title>Display Product</title>
+</head>
+ 
+<body>
+	<h1> TESTVIEW </h1>
+
+ 	<img id="display_image" src="empty" alt="Default" height="100" width="100">
+
+ 	<h3>Price of the item</h3>
+ 	<p id="price"></p>
+ 	<h3>Name and brand</h3>
+ 	<p id="name_brand"></p>
+
+
+    <script>
+
+    String.prototype.insert = function (index, string) {
+	    if (index > 0)
+	        return this.substring(0, this.length-index) + string + this.substring(this.length-index, this.length);
+	    else
+	        return string + this;
+	};
+
+
+
+	var ean_code = "3068320014067";
+	var url = "https://api.siroop.ch/product/ean/";
+	var key = "/?apikey=8ccd66bb1265472cbf8bed4458af4b07";
+	var request_url = url + ean_code + key;
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', request_url, true);
+	xhr.send();
+
+	xhr.onreadystatechange = processRequest;
+	 
+	function processRequest(e) {
+		if (xhr.readyState == 4 && xhr.status == 200) {
+	        var response = JSON.parse(xhr.responseText);
+	        var price = (response[0].price).toString();
+	        var price = price.insert(2, ",");
+	        document.getElementById('display_image').src = response[0].images.highres;
+	        document.getElementById("price").innerHTML = price + "CHF";
+	        document.getElementById("name_brand").innerHTML = response[0].name + ", " + response[0].brand;
+    	} 
+	}
+
+
+
+
+  </script>
+</body>
+ 
+</html>
